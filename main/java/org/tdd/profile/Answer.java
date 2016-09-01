@@ -12,8 +12,8 @@ public class Answer {
         this.condition = condition;
     }
 
-    public Question getQuestion() {
-        return question;
+    public String getQuestionText() {
+        return question.getText();
     }
 
     public Bool getCondition() {
@@ -21,8 +21,9 @@ public class Answer {
     }
 
     //    unit test
-    public boolean match(Answer that) {
-        return this.getQuestion() == that.getQuestion() &&
-                this.getCondition() == that.getCondition();
+    public boolean match(Answer otherAnswer) {
+        return otherAnswer != null &&
+                this.getQuestionText().equals(otherAnswer.getQuestionText()) &&
+                this.getCondition() == otherAnswer.getCondition();
     }
 }
