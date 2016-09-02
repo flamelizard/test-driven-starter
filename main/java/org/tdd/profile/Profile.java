@@ -19,27 +19,17 @@ public class Profile {
     }
 
     public boolean matches(Criterion criterion) {
-        return criterion.getAnswer().match(getMatchingAnswer(criterion));
-
-//        String question1 = criterion.getAnswer().getQuestionText();
-//        for (String question2: answers.keySet()) {
-//            if (question1.equals(question2)) {
-//                return criterion.getAnswer().match(answers.get(question2));
-//            }
-//        }
-//        return false;
+        return criterion.getWeight() == Weight.DontCare ||
+                criterion.getAnswer().match(getMatchingAnswer(criterion));
     }
 
     public boolean matches(Criteria criteria) {
         for (Criterion criterion : criteria) {
-            if (matches(criterion)) {
+            if (matches(criterion))
                 return true;
-            }
+            else if (criterion.getWeight() == Weight.MustMatch)
+                return false;
         }
         return false;
     }
-//
-//    public void add(Answer answer) {
-//        answers.put(answer.getQuestion().getText(), answer);
-//    }
 }

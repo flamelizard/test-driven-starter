@@ -49,15 +49,18 @@ public class ProfileTest {
         hasSickDays = new Answer(questionHasSickDays, Bool.TRUE);
     }
 
-    @Test
-    public void matchesNothingWhenProfileEmpty() {
-        Criterion criterion = new Criterion(
-                new Answer(questionRelocationPackage, Bool.TRUE), Weight.DontCare);
+// Each TDD cleanup may need you to delete tests that are redundant. These
+// tests duplicate checks in some later tests.
 
-        boolean result = profile.matches(criterion);
-
-        assertFalse(result);
-    }
+//    @Test
+//    public void matchesNothingWhenProfileEmpty() {
+//        Criterion criterion = new Criterion(
+//                new Answer(questionRelocationPackage, Bool.TRUE), Weight.Important);
+//
+//        boolean result = profile.matches(criterion);
+//
+//        assertFalse(result);
+//    }
 
     @Test
     public void matchesWhenContainsAnswerMatchingCriterion() {
@@ -105,6 +108,23 @@ public class ProfileTest {
         profile.add(hasSickDays);
         criteria.add(new Criterion(hasSickDays, Weight.Important));
         criteria.add(new Criterion(hasYearlyBonus, Weight.Important));
+
+        assertTrue(profile.matches(criteria));
+    }
+
+    @Test
+    public void doesNotMatchWhenMustMatchCriteriaNotMet() {
+        profile.add(hasNoYearlyBonus);
+        profile.add(hasSickDays);
+        criteria.add(new Criterion(hasYearlyBonus, Weight.MustMatch));
+        criteria.add(new Criterion(hasSickDays, Weight.Important));
+
+        assertFalse(profile.matches(criteria));
+    }
+
+    @Test
+    public void matchesWhenHasCriterionDontCare() {
+        criteria.add(new Criterion(hasSickDays, Weight.DontCare));
 
         assertTrue(profile.matches(criteria));
     }
