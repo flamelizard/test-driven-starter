@@ -3,8 +3,8 @@ package org.tdd.profile;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.*;
 
 /**
  * Created by Tom on 8/29/2016.
@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 TDD
 Always write test first and let it fail.
 Then write code that will make it pass - prove the code passed the test.
-
  */
 public class ProfileTest {
 
@@ -73,7 +72,7 @@ public class ProfileTest {
         assertTrue(result);
     }
 
-    //    just for contrast, below gradually cleaned code, above initial versions
+    //    just for contrast, below gradually cleaned code, above initial version
     @Test
     public void doesNotMatchWhenAnswerNotMatching() {
         profile.add(hasNoRelocationPackage);
@@ -128,4 +127,46 @@ public class ProfileTest {
 
         assertTrue(profile.matches(criteria));
     }
+
+    @Test
+    public void scoreZeroWhenThereAreNoMatches() {
+        criteria.add(new Criterion(hasRelocationPackage, Weight.Important));
+
+        ProfileMatch match = profile.match(criteria);
+
+        assertThat(match.getScore(), equalTo(0));
+    }
+
+    @Test
+    public void scoreIncreaseForSingleMatch() {
+        profile.add(hasRelocationPackage);
+        profile.add(hasYearlyBonus);
+        criteria.add(new Criterion(hasRelocationPackage, Weight.MustMatch));
+
+        ProfileMatch match = profile.match(criteria);
+
+        assertThat(match.getScore(), equalTo(100));
+    }
+
+    @Test
+    public void scoreIncreaseForMultipleMatch() {
+        profile.add(hasRelocationPackage);
+        profile.add(hasYearlyBonus);
+        profile.add(hasSickDays);
+        criteria.add(new Criterion(hasRelocationPackage, Weight.Important));
+        criteria.add(new Criterion(hasSickDays, Weight.DontCare));
+
+        ProfileMatch match = profile.match(criteria);
+
+        assertThat(match.getScore(), equalTo(60));
+    }
+/*
+At this moment, design has been changed and all matching is handled by
+separate object ProfileMatch (previously called MatchSet). Now, I should
+copy over tests to "ProfileMatchTest" and rewrite bits of code using the
+old design - calling match directly on Profile object.
+
+I'm not gonna do that so I can see the contrast and evolution of test and
+production code with every cycle of TDD.
+*/
 }

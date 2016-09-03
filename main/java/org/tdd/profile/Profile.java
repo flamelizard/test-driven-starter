@@ -32,4 +32,9 @@ public class Profile {
         }
         return false;
     }
+
+    //    behaviour above replaced by ProfileMatch, improved design
+    public ProfileMatch match(Criteria criteria) {
+        return new ProfileMatch(answers, criteria);
+    }
 }
