@@ -14,13 +14,23 @@ public class ProfileMatch {
         this.criteria = criteria;
     }
 
-    public Answer getMatchingAnswer(Criterion criterion) {
+    private Answer getMatchingAnswer(Criterion criterion) {
         return answers.get(criterion.getAnswer().getQuestionText());
     }
 
-    public boolean matches(Criterion criterion) {
+    private boolean matches(Criterion criterion) {
         return criterion.getWeight() == Weight.DontCare ||
                 criterion.getAnswer().match(getMatchingAnswer(criterion));
+    }
+
+    public boolean matches() {
+        for (Criterion criterion : criteria) {
+            if (matches(criterion))
+                return true;
+            else if (criterion.getWeight() == Weight.MustMatch)
+                return false;
+        }
+        return false;
     }
 
     public int getScore() {

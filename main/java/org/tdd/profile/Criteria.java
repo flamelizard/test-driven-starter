@@ -10,6 +10,13 @@ import java.util.List;
 public class Criteria implements Iterable<Criterion> {
     private List<Criterion> criteria = new ArrayList<>();
 
+    public Criteria() {
+    }
+
+    public Criteria(Criterion criterion) {
+        add(criterion);
+    }
+
     public void add(Criterion criterion) {
         criteria.add(criterion);
     }

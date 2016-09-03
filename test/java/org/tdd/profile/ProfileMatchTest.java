@@ -14,7 +14,7 @@ TDD
 Always write test first and let it fail.
 Then write code that will make it pass - prove the code passed the test.
  */
-public class ProfileTest {
+public class ProfileMatchTest {
 
     private Profile profile;
     private Question questionRelocationPackage;
@@ -48,38 +48,26 @@ public class ProfileTest {
         hasSickDays = new Answer(questionHasSickDays, Bool.TRUE);
     }
 
-// Each TDD cleanup may need you to delete tests that are redundant. These
-// tests duplicate checks in some later tests.
-
-//    @Test
-//    public void matchesNothingWhenProfileEmpty() {
-//        Criterion criterion = new Criterion(
-//                new Answer(questionRelocationPackage, Bool.TRUE), Weight.Important);
-//
-//        boolean result = profile.matches(criterion);
-//
-//        assertFalse(result);
-//    }
-
     @Test
     public void matchesWhenContainsAnswerMatchingCriterion() {
         profile.add(hasRelocationPackage);
         Criterion criterion = new Criterion(
                 hasRelocationPackage, Weight.MustMatch);
 
-        boolean result = profile.matches(criterion);
+        ProfileMatch match = profile.match(new Criteria(criterion));
 
-        assertTrue(result);
+        assertTrue(match.matches());
     }
 
-    //    just for contrast, below gradually cleaned code, above initial version
     @Test
     public void doesNotMatchWhenAnswerNotMatching() {
         profile.add(hasNoRelocationPackage);
         Criterion criterion = new Criterion(
                 hasRelocationPackage, Weight.Important);
 
-        assertFalse(profile.matches(criterion));
+        ProfileMatch match = profile.match(new Criteria(criterion));
+
+        assertFalse(match.matches());
     }
 
     @Test
@@ -88,7 +76,9 @@ public class ProfileTest {
         profile.add(hasYearlyBonus);
         Criterion criterion = new Criterion(hasYearlyBonus, Weight.MustMatch);
 
-        assertTrue(profile.matches(criterion));
+        ProfileMatch match = profile.match(new Criteria(criterion));
+
+        assertTrue(match.matches());
     }
 
     @Test
@@ -98,7 +88,9 @@ public class ProfileTest {
         criteria.add(new Criterion(hasRelocationPackage, Weight.Important));
         criteria.add(new Criterion(hasSickDays, Weight.MustMatch));
 
-        assertFalse(profile.matches(criteria));
+        ProfileMatch match = profile.match(criteria);
+
+        assertFalse(match.matches());
     }
 
     @Test
@@ -108,7 +100,9 @@ public class ProfileTest {
         criteria.add(new Criterion(hasSickDays, Weight.Important));
         criteria.add(new Criterion(hasYearlyBonus, Weight.Important));
 
-        assertTrue(profile.matches(criteria));
+        ProfileMatch match = profile.match(criteria);
+
+        assertTrue(match.matches());
     }
 
     @Test
@@ -118,14 +112,18 @@ public class ProfileTest {
         criteria.add(new Criterion(hasYearlyBonus, Weight.MustMatch));
         criteria.add(new Criterion(hasSickDays, Weight.Important));
 
-        assertFalse(profile.matches(criteria));
+        ProfileMatch match = profile.match(criteria);
+
+        assertFalse(match.matches());
     }
 
     @Test
     public void matchesWhenHasCriterionDontCare() {
         criteria.add(new Criterion(hasSickDays, Weight.DontCare));
 
-        assertTrue(profile.matches(criteria));
+        ProfileMatch match = profile.match(criteria);
+
+        assertTrue(match.matches());
     }
 
     @Test
@@ -160,13 +158,4 @@ public class ProfileTest {
 
         assertThat(match.getScore(), equalTo(60));
     }
-/*
-At this moment, design has been changed and all matching is handled by
-separate object ProfileMatch (previously called MatchSet). Now, I should
-copy over tests to "ProfileMatchTest" and rewrite bits of code using the
-old design - calling match directly on Profile object.
-
-I'm not gonna do that so I can see the contrast and evolution of test and
-production code with every cycle of TDD.
-*/
 }

@@ -15,7 +15,4 @@ public abstract class Question {
     public String getText() {
         return text;
     }
-
-    //    strange, it just compares expected condition? no text compare?
-    abstract public boolean match(int expected, int actual);
 }
