@@ -3,7 +3,9 @@ package org.tdd.library;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.tdd.library.exceptions.BookDoesNotExists;
 import org.tdd.library.exceptions.UserAlreadyExistsException;
+import org.tdd.library.exceptions.UserDoesNotExist;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -37,6 +39,12 @@ public class BookLibraryTest {
         reader1 = new Reader("Homer", 40, "Greece");
     }
 
+    //    helper method
+    private void presetLibraryAndReader() throws Exception {
+        library.registerNewReader(reader1);
+        library.addBook(book1);
+    }
+
     @Test
     public void libraryHasName() {
         assertThat(library.getName(), equalTo(name));
@@ -65,21 +73,24 @@ public class BookLibraryTest {
     }
 
     @Test
-    public void readerBorrowsBook() throws Exception {
-        library.registerNewReader(reader1);
-        library.addBook(book1);
+    public void canBorrowBook() throws Exception {
+        presetLibraryAndReader();
 
         library.borrowBook(reader1.getName(), book1.getTitle());
     }
 
-    @Test
-    public void readerCannotBorrowBorrowedBook() throws Exception {
+    @Test(expected = BookDoesNotExists.class)
+    public void cannotBorrowNonExistingBook() throws Exception {
         presetLibraryAndReader();
+
+        library.borrowBook(reader1.getName(), "Non-existing title");
     }
 
-    private void presetLibraryAndReader() throws Exception {
-        library.registerNewReader(reader1);
-        library.addBook(book1);
+    @Test(expected = UserDoesNotExist.class)
+    public void cannotBorrowOnNonExistingReader() throws Exception {
+        presetLibraryAndReader();
+
+        library.borrowBook("Invalid-reader-name", book1.getTitle());
     }
 
 }

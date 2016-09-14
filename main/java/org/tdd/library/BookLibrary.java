@@ -1,6 +1,9 @@
 package org.tdd.library;
 
+import org.tdd.library.exceptions.BookDoesNotExists;
+import org.tdd.library.exceptions.LibraryException;
 import org.tdd.library.exceptions.UserAlreadyExistsException;
+import org.tdd.library.exceptions.UserDoesNotExist;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,9 +73,17 @@ public class BookLibrary {
         return books.getOrDefault(title, null);
     }
 
-    public void borrowBook(String readerName, String bookTitle) {
+    public void borrowBook(String readerName, String bookTitle)
+            throws LibraryException {
+
         Reader reader = getUser(readerName);
+        if (reader == null) {
+            throw new UserDoesNotExist();
+        }
         Book book = getBook(bookTitle);
+        if (book == null) {
+            throw new BookDoesNotExists();
+        }
         book.borrowTo(reader);
     }
 }
