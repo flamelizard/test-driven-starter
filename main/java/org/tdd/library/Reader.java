@@ -11,7 +11,7 @@ public class Reader {
     private final String name;
     private final int age;
     private final String permanentStay;
-    private final List<Book> bookcase = new ArrayList<>();
+    private final List<Book> books = new ArrayList<>();
 
     public Reader(String name, int age, String permanentStay) {
 
@@ -32,7 +32,6 @@ public class Reader {
         Reader reader = (Reader) o;
 
         return name.equals(reader.name);
-
     }
 
     @Override
@@ -42,6 +41,14 @@ public class Reader {
     }
 
     public void borrows(Book book) {
-        bookcase.add(book);
+        books.add(book);
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void returnBook(String title) {
+
     }
 }

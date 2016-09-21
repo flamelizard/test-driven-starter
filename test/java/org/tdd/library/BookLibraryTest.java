@@ -4,11 +4,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.tdd.library.exceptions.BookDoesNotExists;
-import org.tdd.library.exceptions.UserAlreadyExistsException;
+import org.tdd.library.exceptions.BookNotAvailable;
+import org.tdd.library.exceptions.UserAlreadyExists;
 import org.tdd.library.exceptions.UserDoesNotExist;
+
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Tom on 9/10/2016.
@@ -26,6 +30,8 @@ public class BookLibraryTest {
     private BookLibrary library;
     private Book book1;
     private Reader reader1;
+    private Reader reader2 = new Reader("Dracula", 60, "Pennsylvania");
+    private Book book2 = new Book("Harry Potter", "...wave magical wand");
 
     @Before
     public void createNamedLibrary() {
@@ -43,6 +49,14 @@ public class BookLibraryTest {
     private void presetLibraryAndReader() throws Exception {
         library.registerNewReader(reader1);
         library.addBook(book1);
+    }
+
+    private void addReader(Reader reader) throws Exception {
+        library.registerNewReader(reader);
+    }
+
+    private void addBook(Book book) {
+        library.addBook(book);
     }
 
     @Test
@@ -66,10 +80,17 @@ public class BookLibraryTest {
         library.registerNewReader("Homer Simpson", 40, "Springfield");
     }
 
-    @Test(expected = UserAlreadyExistsException.class)
+    @Test(expected = UserAlreadyExists.class)
     public void exceptionWhenAddingDuplicateReader() throws Exception {
         library.registerNewReader("Homer Simpson", 40, "Springfield");
         library.registerNewReader("Homer Simpson", 40, "Springfield");
+    }
+
+    @Test
+    public void addedBookIsAvailableForBorrow() {
+        addBook(book1);
+
+        assertTrue(library.isBookAvailable(book1.getTitle()));
     }
 
     @Test
@@ -91,6 +112,45 @@ public class BookLibraryTest {
         presetLibraryAndReader();
 
         library.borrowBook("Invalid-reader-name", book1.getTitle());
+    }
+
+    @Test(expected = BookNotAvailable.class)
+    public void cannotBorrowAlreadyBorrowedBook() throws Exception {
+        addReader(reader1);
+        addReader(reader2);
+        addBook(book1);
+
+        library.borrowBook(reader1, book1.getTitle());
+        library.borrowBook(reader2, book1.getTitle());
+    }
+
+    @Test
+    public void readerCanBorrowMultipleBooks() throws Exception {
+        addReader(reader1);
+        addBook(book1);
+        addBook(book2);
+
+        library.borrowBook(reader1, book1.getTitle());
+        library.borrowBook(reader1, book2.getTitle());
+
+        assertThat(reader1.getBooks(), equalTo
+                (Arrays.asList(book1, book2)));
+    }
+
+    @Test
+    public void readerReturnsBook() throws Exception {
+        addBook(book1);
+        addReader(reader1);
+
+        library.borrowBook(reader1.getName(), book1.getTitle());
+        library.returnBook(reader1.getName(), book1.getTitle());
+
+        assertTrue(library.isBookAvailable(book1.getTitle()));
+
+    }
+
+    @Test
+    public void borrowIsTimeLimited() {
     }
 
 }

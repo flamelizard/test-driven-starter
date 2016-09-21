@@ -2,7 +2,7 @@ package org.tdd.library;
 
 import org.tdd.library.exceptions.BookDoesNotExists;
 import org.tdd.library.exceptions.LibraryException;
-import org.tdd.library.exceptions.UserAlreadyExistsException;
+import org.tdd.library.exceptions.UserAlreadyExists;
 import org.tdd.library.exceptions.UserDoesNotExist;
 
 import java.util.HashMap;
@@ -19,6 +19,12 @@ Add new book
 Create client account
 Borrow book
 Return book
+
+Expectation
+===========
+BookLibrary public, the other classes private
+BookLibrary methods using Reader and Book parameters would be private in real
+ world example
  */
 public class BookLibrary {
     private final String name;
@@ -42,16 +48,16 @@ public class BookLibrary {
     }
 
     public void registerNewReader(String name, int age, String permanentStay)
-            throws UserAlreadyExistsException {
+            throws UserAlreadyExists {
 
         registerNewReader(new Reader(name, age, permanentStay));
     }
 
     public void registerNewReader(Reader reader)
-            throws UserAlreadyExistsException {
+            throws UserAlreadyExists {
 
         if (!addReader(reader)) {
-            throw new UserAlreadyExistsException(reader.getName());
+            throw new UserAlreadyExists(reader.getName());
         }
     }
 
@@ -77,6 +83,12 @@ public class BookLibrary {
             throws LibraryException {
 
         Reader reader = getUser(readerName);
+        borrowBook(reader, bookTitle);
+    }
+
+    public void borrowBook(Reader reader, String bookTitle)
+            throws LibraryException {
+
         if (reader == null) {
             throw new UserDoesNotExist();
         }
@@ -84,6 +96,22 @@ public class BookLibrary {
         if (book == null) {
             throw new BookDoesNotExists();
         }
+//        Awkward double borrow call to support search for a book and a reader
         book.borrowTo(reader);
+        reader.borrows(book);
+    }
+
+    public void returnBook(String readerName, String title) throws LibraryException {
+        returnBook(getUser(readerName), title);
+    }
+
+    private void returnBook(Reader reader, String title) throws LibraryException {
+//        another awkward double call
+        getBook(title).returnBy(reader);
+        reader.returnBook(title);
+    }
+
+    public boolean isBookAvailable(String title) {
+        return getBook(title).isAvailable();
     }
 }
