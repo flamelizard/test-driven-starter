@@ -1,5 +1,7 @@
 package org.tdd.library;
 
+import org.tdd.library.exceptions.LibraryException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,10 @@ public class Reader {
         return name;
     }
 
+    public List<Book> getBooks() {
+        return books;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,15 +46,13 @@ public class Reader {
         return name.hashCode();
     }
 
-    public void borrows(Book book) {
+    public void borrows(Book book) throws LibraryException {
+        book.setOwner(this);
         books.add(book);
     }
 
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void returnBook(String title) {
-
+    public void returns(Book book) throws LibraryException {
+        book.unsetOwner(this);
+        books.remove(book);
     }
 }

@@ -9,10 +9,10 @@ import org.tdd.library.exceptions.UserAlreadyExists;
 import org.tdd.library.exceptions.UserDoesNotExist;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by Tom on 9/10/2016.
@@ -32,6 +32,7 @@ public class BookLibraryTest {
     private Reader reader1;
     private Reader reader2 = new Reader("Dracula", 60, "Pennsylvania");
     private Book book2 = new Book("Harry Potter", "...wave magical wand");
+    private Book book3 = new Book("Stalker", "...found the artifact");
 
     @Before
     public void createNamedLibrary() {
@@ -93,13 +94,6 @@ public class BookLibraryTest {
         assertTrue(library.isBookAvailable(book1.getTitle()));
     }
 
-    @Test
-    public void canBorrowBook() throws Exception {
-        presetLibraryAndReader();
-
-        library.borrowBook(reader1.getName(), book1.getTitle());
-    }
-
     @Test(expected = BookDoesNotExists.class)
     public void cannotBorrowNonExistingBook() throws Exception {
         presetLibraryAndReader();
@@ -141,12 +135,49 @@ public class BookLibraryTest {
     public void readerReturnsBook() throws Exception {
         addBook(book1);
         addReader(reader1);
-
         library.borrowBook(reader1.getName(), book1.getTitle());
+
         library.returnBook(reader1.getName(), book1.getTitle());
 
-        assertTrue(library.isBookAvailable(book1.getTitle()));
+        assertTrue(reader1.getBooks().isEmpty());
+    }
 
+    @Test
+    public void readerReturnsMultipleBooks() throws Exception {
+        addBook(book1);
+        addBook(book2);
+        addBook(book3);
+        addReader(reader1);
+        library.borrowBook(reader1.getName(), book1.getTitle());
+        library.borrowBook(reader1.getName(), book2.getTitle());
+        library.borrowBook(reader1.getName(), book3.getTitle());
+
+        library.returnBook(reader1.getName(), book1.getTitle());
+        library.returnBook(reader1.getName(), book2.getTitle());
+
+        assertThat(reader1.getBooks(),
+                equalTo(Collections.singletonList(book3)));
+    }
+
+    @Test
+    public void returnedBookIsAvailable() throws Exception {
+        addBook(book1);
+        addReader(reader1);
+        library.borrowBook(reader1.getName(), book1.getTitle());
+
+        library.returnBook(reader1.getName(), book1.getTitle());
+
+        assertTrue(book1.isAvailable());
+    }
+
+    @Test
+    public void borrowedBookNotAvailable() throws Exception {
+        addBook(book1);
+        addReader(reader1);
+
+        library.borrowBook(reader1, book1.getTitle());
+
+        assertFalse(book1.isAvailable());
     }
 
     @Test

@@ -21,21 +21,21 @@ public class Book {
         return title;
     }
 
-    public void borrowTo(Reader reader) throws LibraryException {
+    public void setOwner(Reader reader) throws LibraryException {
         if (owner != null) {
             throw new BookNotAvailable();
         }
         owner = reader;
     }
 
-    public boolean isAvailable() {
-        return owner == null;
-    }
-
-    public void returnBy(Reader reader) throws LibraryException {
-        if (!owner.equals(reader)) {
+    public void unsetOwner(Reader reader) throws LibraryException {
+        if (owner != null && !owner.equals(reader)) {
             throw new ReaderMismatchOnReturnedBook();
         }
         owner = null;
+    }
+
+    public boolean isAvailable() {
+        return owner == null;
     }
 }

@@ -10,4 +10,10 @@ package org.tdd.library.exceptions;
 *
 * */
 public class LibraryException extends Exception {
+    public LibraryException() {
+    }
+
+    public LibraryException(String text) {
+        super(text);
+    }
 }

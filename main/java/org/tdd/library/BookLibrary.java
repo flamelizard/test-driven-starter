@@ -18,6 +18,7 @@ Requirements
 Add new book
 Create client account
 Borrow book
+    - set owner on the book, make a lease on reader instance
 Return book
 
 Expectation
@@ -96,8 +97,6 @@ public class BookLibrary {
         if (book == null) {
             throw new BookDoesNotExists();
         }
-//        Awkward double borrow call to support search for a book and a reader
-        book.borrowTo(reader);
         reader.borrows(book);
     }
 
@@ -106,9 +105,7 @@ public class BookLibrary {
     }
 
     private void returnBook(Reader reader, String title) throws LibraryException {
-//        another awkward double call
-        getBook(title).returnBy(reader);
-        reader.returnBook(title);
+        reader.returns(getBook(title));
     }
 
     public boolean isBookAvailable(String title) {
