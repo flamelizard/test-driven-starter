@@ -181,7 +181,21 @@ public class BookLibraryTest {
     }
 
     @Test
-    public void borrowIsTimeLimited() {
+    public void AvailableBookIsNotOverdue() throws Exception {
+        addBook(book1);
+        addReader(reader1);
+        library.borrowBook(reader1, book1.getTitle());
+
+        assertFalse(book1.isOverdue());
     }
 
+    @Test
+    public void BorrowedBookIsOverDue() throws Exception {
+        addBook(book1);
+        addReader(reader1);
+
+        library.borrowBook(reader1, book1.getTitle());
+
+        assertTrue(book1.isOverdue());
+    }
 }

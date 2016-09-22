@@ -28,6 +28,7 @@ BookLibrary methods using Reader and Book parameters would be private in real
  world example
  */
 public class BookLibrary {
+    public static final int BORROW_LENGTH = 30;
     private final String name;
     private final Map<String, Book> books = new HashMap<>();
     private final Set<Reader> readers = new HashSet<>();
