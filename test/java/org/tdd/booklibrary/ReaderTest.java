@@ -1,4 +1,4 @@
-package org.tdd.library;
+package org.tdd.booklibrary;
 
 import org.junit.Test;
 

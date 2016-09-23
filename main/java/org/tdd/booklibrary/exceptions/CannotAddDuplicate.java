@@ -1,4 +1,4 @@
-package org.tdd.library.exceptions;
+package org.tdd.booklibrary.exceptions;
 
 /**
  * Created by Tom on 9/10/2016.

@@ -1,10 +1,8 @@
-package org.tdd.library;
+package org.tdd.booklibrary;
 
-import org.tdd.library.exceptions.BookNotAvailable;
-import org.tdd.library.exceptions.LibraryException;
-import org.tdd.library.exceptions.ReaderMismatchOnReturnedBook;
-
-import java.util.Calendar;
+import org.tdd.booklibrary.exceptions.BookNotAvailable;
+import org.tdd.booklibrary.exceptions.LibraryException;
+import org.tdd.booklibrary.exceptions.ReaderMismatchOnReturnedBook;
 
 /**
  * Created by Tom on 9/10/2016.
@@ -13,8 +11,7 @@ public class Book {
     private final String content;
     private final String title;
     private Reader owner;
-    private Calendar borrowExpires;
-    private Calendar calc;
+    private Expiration expiration = new Expiration();
 
     public Book(String name, String content) {
         this.title = name;
@@ -22,6 +19,7 @@ public class Book {
     }
 
     public String getTitle() {
+        expiration.hasExpired();
         return title;
     }
 
@@ -30,13 +28,7 @@ public class Book {
             throw new BookNotAvailable();
         }
         owner = reader;
-        setWhenBorrowExpires();
-    }
-
-    private void setWhenBorrowExpires() {
-        calc = Calendar.getInstance();
-        calc.add(Calendar.DAY_OF_MONTH, BookLibrary.BORROW_LENGTH);
-        borrowExpires = calc;
+        expiration.set(BookLibrary.BORROW_LENGTH);
     }
 
     public void unsetOwner(Reader reader) throws LibraryException {
@@ -51,9 +43,6 @@ public class Book {
     }
 
     public boolean isOverdue() {
-        if (owner == null) return false;
-
-        Calendar today = Calendar.getInstance();
-        return today.compareTo(borrowExpires) > 0;
+        return expiration.hasExpired();
     }
 }

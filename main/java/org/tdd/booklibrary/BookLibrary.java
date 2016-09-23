@@ -1,9 +1,9 @@
-package org.tdd.library;
+package org.tdd.booklibrary;
 
-import org.tdd.library.exceptions.BookDoesNotExists;
-import org.tdd.library.exceptions.LibraryException;
-import org.tdd.library.exceptions.UserAlreadyExists;
-import org.tdd.library.exceptions.UserDoesNotExist;
+import org.tdd.booklibrary.exceptions.BookDoesNotExists;
+import org.tdd.booklibrary.exceptions.LibraryException;
+import org.tdd.booklibrary.exceptions.UserAlreadyExists;
+import org.tdd.booklibrary.exceptions.UserDoesNotExist;
 
 import java.util.HashMap;
 import java.util.HashSet;

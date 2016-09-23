@@ -1,6 +1,6 @@
-package org.tdd.library;
+package org.tdd.booklibrary;
 
-import org.tdd.library.exceptions.LibraryException;
+import org.tdd.booklibrary.exceptions.LibraryException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ public class Reader {
     private final List<Book> books = new ArrayList<>();
 
     public Reader(String name, int age, String permanentStay) {
-
         this.name = name;
         this.age = age;
         this.permanentStay = permanentStay;

@@ -1,12 +1,11 @@
-package org.tdd.library;
+package org.tdd.booklibrary;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.tdd.library.exceptions.BookDoesNotExists;
-import org.tdd.library.exceptions.BookNotAvailable;
-import org.tdd.library.exceptions.UserAlreadyExists;
-import org.tdd.library.exceptions.UserDoesNotExist;
+import org.tdd.booklibrary.exceptions.BookDoesNotExists;
+import org.tdd.booklibrary.exceptions.BookNotAvailable;
+import org.tdd.booklibrary.exceptions.UserAlreadyExists;
+import org.tdd.booklibrary.exceptions.UserDoesNotExist;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,31 +21,20 @@ Complex tests should go to a separate class and init library before.
 
 However compiler will let me run only "public" class and there can be only one
 public class per a file (where filename matches public class name)
+
+Net did not help as how to split test for targeting single class.
 */
 
 public class BookLibraryTest {
 
-    private String name;
-    private BookLibrary library;
-    private Book book1;
-    private Reader reader1;
+    private String name = "National Lib";
+    private BookLibrary library = new BookLibrary(name);
+    private Reader reader1 = new Reader("Homer", 40, "Greece");
     private Reader reader2 = new Reader("Dracula", 60, "Pennsylvania");
+    private Book book1 = new Book("Oliver Twist", "...slammed the door");
     private Book book2 = new Book("Harry Potter", "...wave magical wand");
     private Book book3 = new Book("Stalker", "...found the artifact");
 
-    @Before
-    public void createNamedLibrary() {
-        name = "Town library";
-        library = new BookLibrary(name);
-    }
-
-    @Before
-    public void createReaderAndBooks() {
-        book1 = new Book("Oliver Twist", "...slammed the door");
-        reader1 = new Reader("Homer", 40, "Greece");
-    }
-
-    //    helper method
     private void presetLibraryAndReader() throws Exception {
         library.registerNewReader(reader1);
         library.addBook(book1);
@@ -187,15 +175,5 @@ public class BookLibraryTest {
         library.borrowBook(reader1, book1.getTitle());
 
         assertFalse(book1.isOverdue());
-    }
-
-    @Test
-    public void BorrowedBookIsOverDue() throws Exception {
-        addBook(book1);
-        addReader(reader1);
-
-        library.borrowBook(reader1, book1.getTitle());
-
-        assertTrue(book1.isOverdue());
     }
 }
