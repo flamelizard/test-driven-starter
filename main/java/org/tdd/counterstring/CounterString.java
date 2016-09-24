@@ -34,7 +34,9 @@ public class CounterString {
         return generate(length, delimiter);
     }
 
-    public static String generateOriginal(int length, String delimiter) {
+    public static String generate_originalVersion(
+            int length, String delimiter) {
+
         StringBuilder string = new StringBuilder();
         switch (length) {
             case 0:
