@@ -1,6 +1,7 @@
 package org.tdd.counterstring;
 
 import org.junit.Test;
+import org.tdd.counterstring.clibboard.ClipboardWrap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
@@ -90,6 +91,12 @@ public class CounterStringTest {
     public void matchesLengthFor100() {
         length = 100;
         assertTrue(CounterString.generate(length).length() == length);
+    }
+
+    @Test
+    public void copyStringToClipboard() {
+        String string = CounterString.generate(10, true);
+        assertThat(string, equalTo(ClipboardWrap.getContent()));
     }
 
 //    This piece usually does not belong to tests that should be self-validating

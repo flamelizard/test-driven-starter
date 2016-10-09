@@ -1,5 +1,7 @@
 package org.tdd.counterstring;
 
+import org.tdd.counterstring.clibboard.ClipboardWrap;
+
 /**
  * Created by Tom on 9/3/2016.
  */
@@ -11,8 +13,10 @@ requirements.
  */
 public class CounterString {
 
+    private static boolean copyToClipboard = false;
+
     //    Improved design based on House Of Test Generator
-    public static String generate(int length, String delimiter) {
+    static String generate(int length, String delimiter) {
         StringBuilder string = new StringBuilder();
         int interimStringLen;
         int digit = length;
@@ -26,12 +30,20 @@ public class CounterString {
             interimStringLen = string.length();
             digit = length - interimStringLen;
         }
+        if (copyToClipboard) {
+            ClipboardWrap.putContent(string.toString());
+        }
         return string.toString();
     }
 
     public static String generate(int length) {
         String delimiter = "*";
         return generate(length, delimiter);
+    }
+
+    public static String generate(int length, boolean clipboard) {
+        copyToClipboard |= clipboard;
+        return generate(length);
     }
 
     public static String generate_originalVersion(
